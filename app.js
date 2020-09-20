@@ -1,16 +1,24 @@
 "use strict";
 
 class Timer {
-  constructor(durationInput, startButton, pauseButton) {
+  constructor(durationInput, startButton, pauseButton, callbacks) {
     this.durationInput = durationInput;
     this.startButton = startButton;
     this.pauseButton = pauseButton;
+
+    if (callbacks) {
+      const { onStart, onTick, onComplete } = callbacks;
+      this.onStart = onStart;
+      this.onTick = onTick;
+      this.onComplete = onComplete;
+    }
 
     this.startButton.addEventListener("click", this.start);
     this.pauseButton.addEventListener("click", this.pause);
   }
 
   start = () => {
+    this.onStart && this.onStart();
     this.tick();
     this.intervalId = setInterval(this.tick, 1000);
   };
@@ -40,4 +48,16 @@ const durationInput = document.querySelector("#duration");
 const startButton = document.querySelector("#start");
 const pauseButton = document.querySelector("#pause");
 
-const timer = new Timer(durationInput, startButton, pauseButton);
+const timer = new Timer(durationInput, startButton, pauseButton, {
+  onStart() {
+    console.log("Timer started");
+  },
+
+  onTick() {
+    console.log("Tick!!");
+  },
+
+  onComplete() {
+    console.log("Timer Completed!!");
+  },
+});
